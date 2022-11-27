@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <QCARConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="qcar_config.xsd">
   <Tracking>
-    <ImageTarget name="KakaoTalk_20221127_195542904" size="1.000000 1.320495" />
+    <ImageTarget name="Shower_Temp" size="2.000000 1.976714" />
     <ImageTarget name="Food_Temp" size="2.000000 2.000000" />
     <ImageTarget name="BalloonMarker_Temp" size="2.000000 2.000000" />
   </Tracking>
