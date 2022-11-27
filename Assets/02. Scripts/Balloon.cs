@@ -44,10 +44,14 @@ public class Balloon : MonoBehaviour
         transform.DOMove(eatTransform.position, 2f);
 
         yield return new WaitForSeconds(4f);
+        transform.DOLocalRotate(new Vector3(62, 0, 0), 0.5f);
+        transform.DOLocalRotate(new Vector3(20, 0, 0), 0.5f).SetEase(Ease.Linear).SetLoops(4, LoopType.Yoyo);
+        yield return new WaitForSeconds(4f);
         food.SetActive(false);
         transform.DOMove(homeTransform.position, 2f);
         Debug.Log("음식 섭취");
-        Debug.Log("");
+        Debug.Log("포만도 크게 증가");
+        Debug.Log("청결도 작게 감소");
     }
 
     void Walk()
