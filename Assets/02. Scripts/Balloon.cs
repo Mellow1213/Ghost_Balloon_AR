@@ -1,10 +1,11 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Balloon : MonoBehaviour
 {
     float hapiness = 50;
+    bool isIdle = true;
 
     // Start is called before the first frame update
     void Start()
@@ -28,10 +29,6 @@ public class Balloon : MonoBehaviour
     {
     }
 
-    void Shower()
-    {
-
-    }
 
     void Exercise()
     {
@@ -58,21 +55,21 @@ public class Balloon : MonoBehaviour
             if (timer > 0.1f)
             {
                 walkDistance += Vector3.Distance(prevPos, transform.position);
-                Debug.Log("ÀÌµ¿ °Å¸® : " + Vector3.Distance(prevPos, transform.position));
+                Debug.Log("ì´ë™ ê±°ë¦¬ : " + Vector3.Distance(prevPos, transform.position));
                 timer = 0f;
                 prevPos = transform.position;
             }
             Debug.Log("walkDistance : " + walkDistance);
-            Debug.Log("»êÃ¥ Áß");
+            Debug.Log("ì‚°ì±… ì¤‘");
 
             if(walkDistance >= playTimeDistance)
             {
                 walkDistance = 0;
                 isPlay = false;
-                Debug.Log("³î¾ÆÁÖ±â ³¡.");
-                Debug.Log("Áñ°Å¿ò Å©°Ô Áõ°¡.");
-                Debug.Log("Ã»°áµµ ÀÛ°Ô °¨¼Ò.");
-                Debug.Log("Æ÷¸¸µµ Áß°£ °¨¼Ò.");
+                Debug.Log("ë†€ì•„ì£¼ê¸° ë.");
+                Debug.Log("ì¦ê±°ì›€ í¬ê²Œ ì¦ê°€.");
+                Debug.Log("ì²­ê²°ë„ ì‘ê²Œ ê°ì†Œ.");
+                Debug.Log("í¬ë§Œë„ ì¤‘ê°„ ê°ì†Œ.");
             }
         }
 
@@ -81,6 +78,18 @@ public class Balloon : MonoBehaviour
 
     void Idle()
     {
+        if (isIdle)
+        {
+            Debug.Log("ì¼ì • ê°„ê²©ìœ¼ë¡œ ëª¨ë“  ìˆ˜ì¹˜ ê°ì†Œ");
+            Debug.Log("í”¼ë¡œë„ ì†Œí­ ê°ì†Œ");
 
+        }
     }
+
+    //ìƒ¤ì›Œ ì‹œìŠ¤í…œ
+    private void OnParticleCollision(GameObject other)
+    {
+        Debug.Log("ì²­ê²°ë„ +1");
+    }
+
 }
