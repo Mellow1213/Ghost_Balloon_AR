@@ -1,1 +1,3 @@
 풍선 : https://assetstore.unity.com/packages/3d/animations/balloon-ghost-with-breakable-parts-209499
+파티클 : https://assetstore.unity.com/packages/vfx/particles/sherbb-s-particle-collection-170798
+(샤워기 물)
