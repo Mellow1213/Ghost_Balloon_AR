@@ -8,15 +8,18 @@ public class Balloon : MonoBehaviour
     float hapiness = 50;
     bool isIdle = true;
     public Transform homeTransform;
+    public Transform rotateAnchor;
 
     // Start is called before the first frame update
     void Start()
     {
+
     }
 
     // Update is called once per frame
     void Update()
     {
+        CalculateWatchVector(eatTransform);
         Play();
         Eat();
     }
@@ -112,7 +115,6 @@ public class Balloon : MonoBehaviour
         {
             Debug.Log("일정 간격으로 모든 수치 감소");
             Debug.Log("피로도 소폭 감소");
-
         }
     }
 
@@ -122,4 +124,11 @@ public class Balloon : MonoBehaviour
         Debug.Log("청결도 +1");
     }
 
+    void CalculateWatchVector(Transform targetTransform)
+    {
+        Vector3 direction = (targetTransform.position - rotateAnchor.position).normalized;
+
+        rotateAnchor.rotation = Quaternion.Lerp(rotateAnchor.rotation, Quaternion.LookRotation(direction), Time.deltaTime * 5f);
+        rotateAnchor.localEulerAngles = new Vector3(rotateAnchor.localEulerAngles.x, rotateAnchor.localEulerAngles.y, 0);
+    }
 }

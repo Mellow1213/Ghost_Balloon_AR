@@ -18,7 +18,7 @@ public class DOTweenAnimTest : MonoBehaviour
             transform.DOJump(new Vector3(0, 2, 0), 2f, 1, 2f);
         }
         if (Input.GetKeyDown(KeyCode.Alpha2))
-        {
+        { 
             transform.DOScale(new Vector3(1.2f, 1.2f, 1.2f), 0.5f).SetEase(Ease.OutCubic).SetLoops(4, LoopType.Yoyo);
         }
         if (Input.GetKeyDown(KeyCode.Alpha3))
