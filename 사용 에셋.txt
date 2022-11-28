@@ -1,3 +1,5 @@
 풍선 : https://assetstore.unity.com/packages/3d/animations/balloon-ghost-with-breakable-parts-209499
 파티클 : https://assetstore.unity.com/packages/vfx/particles/sherbb-s-particle-collection-170798
 (샤워기 물)
+애니메이션 이동 : DOTween
+샌드백 : https://sketchfab.com/3d-models/vintage-old-punching-bag-487e01cd3eea41c8a49062956c79eb66
