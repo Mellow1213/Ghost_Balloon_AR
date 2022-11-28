@@ -5,51 +5,84 @@ using DG.Tweening;
 
 public class Balloon : MonoBehaviour
 {
+
+
     float hapiness = 50;
-    bool isIdle = true;
+
+    public TrackingTarget[] targets;
+    public TrackingTarget BalloonTarget;
+
     public Transform homeTransform;
     public Transform rotateAnchor;
+    Animator _animator;
+
 
     // Start is called before the first frame update
     void Start()
     {
-
+        _animator = GetComponent<Animator>();
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (BalloonTarget.getIsTracked())
+        {
+            //Debug.Log("FoodTarget = " + targets[0].getIsTracked());
+            if (targets[0].getIsTracked())
+            {
+                Eat();
+            }
+            else
+            {
+                isEat = false;
+                food.SetActive(true);
+            }
+
+            //Debug.Log("ShowerTarget = " + targets[1].getIsTracked());
+            if (targets[1].getIsTracked())
+            {
+                Shower();
+            }
+
+        }
+
+
+
+
         //CalculateWatchVector(eatTransform);
 
+        //Debug.Log("ExerciseTarget = " + targets[2].getIsTracked());
+        //Debug.Log("WalkTarget = " + targets[3].getIsTracked());
 
+        //Play();
+        //Eat();
+        //Walk();
         if (Input.GetKey(KeyCode.K))
             CalculateWatchVector(Camera.main.transform);
         else
-            rotateAnchor.DOLocalRotate(Vector3.zero, 2f); 
-
-
-
-
-        Play();
-        Eat();
-        Walk();
+        {
+            rotateAnchor.DOLocalRotate(Vector3.zero, 2f);
+        }
     }
 
 
     public Transform eatTransform;
-    bool doEat = false;
     public GameObject food;
+    bool isEat = false;
+    float EatTimer = 0f;
     void Eat()
     {
-        if (Input.GetKeyDown(KeyCode.Alpha9))
+        if (!isEat)
         {
-            doEat = true;
-        }
+            EatTimer += Time.deltaTime;
 
-        if (doEat)
-        {
-            doEat = false;
-            StartCoroutine(DoEat());
+            if (EatTimer >= 3f)
+            {
+                EatTimer = 0f;
+                isEat = true;
+                StartCoroutine(DoEat());
+            }
         }
     }
 
@@ -68,6 +101,26 @@ public class Balloon : MonoBehaviour
         Debug.Log("청결도 작게 감소");
     }
 
+    float showerTimer = 0f;
+    void Shower()
+    {
+        Debug.Log("샤워하고 난 대기 시간 = " + showerTimer);
+        showerTimer += Time.deltaTime;
+        if(showerTimer >= 5f)
+        {
+            Debug.Log("몸털기");
+        }
+
+    }
+    //샤워 시스템
+    private void OnParticleCollision(GameObject other)
+    {
+        showerTimer = 0f;
+        Debug.Log("청결도+");
+    }
+
+
+
     public LineRenderer _lineRenderer;
     public Transform linePos;
     public Transform BalloonLead;
@@ -81,10 +134,23 @@ public class Balloon : MonoBehaviour
         }
     }
 
-
+    public GameObject punchingBag;
+    float exerciseTimer = 0f;
     void Exercise()
     {
-
+        CalculateWatchVector(punchingBag.transform);
+        Debug.Log(Vector3.Distance(punchingBag.transform.position, rotateAnchor.position));
+        if (Vector3.Distance(punchingBag.transform.position, rotateAnchor.position) < 2f)
+        {
+            Debug.Log("확인");
+            exerciseTimer += Time.deltaTime;
+            if (exerciseTimer > 1f)
+                _animator.SetTrigger("Exercise");
+        }
+        else
+        {
+            exerciseTimer = 0f;
+        }
     }
 
     bool isPlay = false;
@@ -128,6 +194,7 @@ public class Balloon : MonoBehaviour
 
     }
 
+    bool isIdle = true;
     void Idle()
     {
         if (isIdle)
@@ -137,16 +204,19 @@ public class Balloon : MonoBehaviour
         }
     }
 
-    //샤워 시스템
-    private void OnParticleCollision(GameObject other)
-    {
-        Debug.Log("청결도 +1");
-    }
 
+    void LookState(int state)
+    {
+        switch (state)
+        {
+            case 0: // 대기상태
+                rotateAnchor.DOLocalRotate(Vector3.zero, 2f);
+                break;
+        }
+    }
     void CalculateWatchVector(Transform targetTransform)
     {
         Vector3 direction = (targetTransform.position - rotateAnchor.position).normalized;
-
         rotateAnchor.rotation = Quaternion.Lerp(rotateAnchor.rotation, Quaternion.LookRotation(direction), Time.deltaTime * 2f);
         rotateAnchor.localEulerAngles = new Vector3(rotateAnchor.localEulerAngles.x, rotateAnchor.localEulerAngles.y, 0);
     }
