@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using UnityEngine.UI;
 
 public class Balloon : MonoBehaviour
 {
@@ -12,6 +13,8 @@ public class Balloon : MonoBehaviour
 
     [SerializeField] float affection = 20;
     [SerializeField] float fatigue = 0;
+
+    public Slider[] silderBar;
 
     public TrackingTarget[] targets;
     public TrackingTarget BalloonTarget;
@@ -42,6 +45,13 @@ public class Balloon : MonoBehaviour
         fatigue = Mathf.Clamp(fatigue, 0, 100);
 
         affection = fun * 0.25f + clean * 0.25f + healthy * 0.25f + full * 0.25f;
+
+        silderBar[0].value = fun / 100;
+        silderBar[1].value = clean / 100;
+        silderBar[2].value = healthy / 100;
+        silderBar[3].value = full / 100;
+        silderBar[4].value = affection / 100;
+        silderBar[5].value = fatigue / 100;
         if (BalloonTarget.getIsTracked())
         {
             //Debug.Log("FoodTarget = " + targets[0].getIsTracked());
