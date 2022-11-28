@@ -19,9 +19,20 @@ public class Balloon : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        CalculateWatchVector(eatTransform);
+        //CalculateWatchVector(eatTransform);
+
+
+        if (Input.GetKey(KeyCode.K))
+            CalculateWatchVector(Camera.main.transform);
+        else
+            rotateAnchor.DOLocalRotate(Vector3.zero, 2f); 
+
+
+
+
         Play();
         Eat();
+        Walk();
     }
 
 
@@ -57,9 +68,17 @@ public class Balloon : MonoBehaviour
         Debug.Log("청결도 작게 감소");
     }
 
+    public LineRenderer _lineRenderer;
+    public Transform linePos;
+    public Transform BalloonLead;
     void Walk()
     {
-
+        _lineRenderer.SetPosition(0, linePos.position);
+        _lineRenderer.SetPosition(1, BalloonLead.position);
+        if(Vector3.Distance(rotateAnchor.transform.position, linePos.position) > 1f)
+        {
+            rotateAnchor.position = Vector3.MoveTowards(rotateAnchor.transform.position, linePos.position, 5 * Time.deltaTime);
+        }
     }
 
 
@@ -95,7 +114,7 @@ public class Balloon : MonoBehaviour
             Debug.Log("walkDistance : " + walkDistance);
             Debug.Log("산책 중");
 
-            if(walkDistance >= playTimeDistance)
+            if (walkDistance >= playTimeDistance)
             {
                 walkDistance = 0;
                 isPlay = false;
@@ -128,7 +147,7 @@ public class Balloon : MonoBehaviour
     {
         Vector3 direction = (targetTransform.position - rotateAnchor.position).normalized;
 
-        rotateAnchor.rotation = Quaternion.Lerp(rotateAnchor.rotation, Quaternion.LookRotation(direction), Time.deltaTime * 5f);
+        rotateAnchor.rotation = Quaternion.Lerp(rotateAnchor.rotation, Quaternion.LookRotation(direction), Time.deltaTime * 2f);
         rotateAnchor.localEulerAngles = new Vector3(rotateAnchor.localEulerAngles.x, rotateAnchor.localEulerAngles.y, 0);
     }
 }
