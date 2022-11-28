@@ -115,6 +115,7 @@ public class Balloon : MonoBehaviour
     float EatTimer = 0f;
     void Eat()
     {
+        LookState(4);
         if (!isEat)
         {
             EatTimer += Time.deltaTime;
@@ -130,14 +131,14 @@ public class Balloon : MonoBehaviour
 
     IEnumerator DoEat()
     {
-        transform.DOMove(eatTransform.position, 2f);
+        rotateAnchor.DOMove(eatTransform.position, 2f);
 
         yield return new WaitForSeconds(4f);
-        transform.DOLocalRotate(new Vector3(62, 0, 0), 0.5f);
-        transform.DOLocalRotate(new Vector3(20, 0, 0), 0.5f).SetEase(Ease.Linear).SetLoops(4, LoopType.Yoyo);
+        rotateAnchor.DOLocalRotate(new Vector3(62, 0, 0), 0.5f);
+        rotateAnchor.DOLocalRotate(new Vector3(20, 0, 0), 0.5f).SetEase(Ease.Linear).SetLoops(4, LoopType.Yoyo);
         yield return new WaitForSeconds(4f);
         food.SetActive(false);
-        transform.DOMove(homeTransform.position, 2f);
+        rotateAnchor.DOMove(homeTransform.position, 2f);
         Debug.Log("음식 섭취");
         Debug.Log("포만도 크게 증가");
         Debug.Log("청결도 작게 감소");
@@ -269,6 +270,9 @@ public class Balloon : MonoBehaviour
                 break;
             case 3: // 운동중
                 CalculateWatchVector(punchingBag.transform);
+                break;
+            case 4:
+                CalculateWatchVector(food.transform);
                 break;
         }
     }
