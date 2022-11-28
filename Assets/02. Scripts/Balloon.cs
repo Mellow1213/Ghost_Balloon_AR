@@ -5,9 +5,13 @@ using DG.Tweening;
 
 public class Balloon : MonoBehaviour
 {
+    [SerializeField] float fun = 40;
+    [SerializeField] float clean = 40;
+    [SerializeField] float healthy = 40;
+    [SerializeField] float full = 40;
 
-
-    float hapiness = 50;
+    [SerializeField] float affection = 20;
+    [SerializeField] float fatigue = 0;
 
     public TrackingTarget[] targets;
     public TrackingTarget BalloonTarget;
@@ -26,12 +30,25 @@ public class Balloon : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        fun = Mathf.Clamp(fun, 0, 100);
+        clean = Mathf.Clamp(clean, 0, 100);
+        healthy = Mathf.Clamp(healthy, 0, 100);
+        full = Mathf.Clamp(full, 0, 100);
+        affection = Mathf.Clamp(affection, 0, 100);
+        fatigue = Mathf.Clamp(fatigue, 0, 100);
+
+        affection = fun * 0.25f + clean * 0.25f + healthy * 0.25f + full * 0.25f;
         if (BalloonTarget.getIsTracked())
         {
             //Debug.Log("FoodTarget = " + targets[0].getIsTracked());
             if (targets[0].getIsTracked())
             {
-                Eat();
+                if(fatigue < 100)
+                    Eat();
+                else
+                {
+                    Debug.Log("체력이 부족하여 수행 불가능");
+                }
             }
             else
             {
@@ -63,14 +80,25 @@ public class Balloon : MonoBehaviour
 
             if (targets[2].getIsTracked())
             {
-                Exercise();
+                if (fatigue < 100)
+                    Exercise();
+                else
+                {
+                    Debug.Log("체력이 부족하여 수행 불가능");
+
+                }
             }
 
 
             if (targets[3].getIsTracked())
             {
-                Walk();
-                Debug.Log("산책 시작");
+                if (fatigue < 100)
+                {
+                    Walk();
+                    Debug.Log("산책 시작");
+                }
+                else
+                    Debug.Log("체력 부족 실행 불가능");
             }
             else
             {
@@ -81,15 +109,22 @@ public class Balloon : MonoBehaviour
                     {
                         Debug.Log("산책 끝");
 
+                        if (walkTimer > 20)
+                        {
+                            fun += walkTimer * 0.5f;
+                            clean -= walkTimer * 0.75f;
+                            healthy += walkTimer * 0.5f;
+                            full -= walkTimer * 0.75f;
+                            fatigue += walkTimer * 0.5f;
+                        }
                         isWalkStarted = false;
                     }
                 }
             }
 
-
             Play();
 
-            if (!targets[0].getIsTracked() && !targets[1].getIsTracked() && !targets[2].getIsTracked() && !targets[3].getIsTracked())
+            if (!targets[0].getIsTracked() && !targets[1].getIsTracked() && !targets[2].getIsTracked() && !targets[3].getIsTracked() && !doWashing)
             {
                 Idle();
             }
@@ -141,7 +176,9 @@ public class Balloon : MonoBehaviour
         rotateAnchor.DOMove(homeTransform.position, 2f);
         Debug.Log("음식 섭취");
         Debug.Log("포만도 크게 증가");
+        full += 20;
         Debug.Log("청결도 작게 감소");
+        clean -= 5;
     }
 
     bool doWashing = false;
@@ -153,15 +190,17 @@ public class Balloon : MonoBehaviour
         doWashing = true;
         showerTimer = 0f;
         Debug.Log("청결도+");
+        clean += 0.1f;
+        fatigue -= 0.2f;
     }
 
 
 
     public LineRenderer _lineRenderer;
     public Transform linePos;
-    public Transform walkLookPos;
     public Transform BalloonLead;
     bool isWalkStarted = false;
+    float walkTimer = 0f;
     void Walk()
     {
         LookState(2);
@@ -170,6 +209,7 @@ public class Balloon : MonoBehaviour
         _lineRenderer.SetPosition(1, BalloonLead.position);
         if (Vector3.Distance(rotateAnchor.transform.position, linePos.position) > 0.5f)
         {
+            walkTimer += Time.deltaTime;
             rotateAnchor.position = Vector3.Lerp(rotateAnchor.transform.position, linePos.position, Time.deltaTime);
         }
     }
@@ -189,6 +229,10 @@ public class Balloon : MonoBehaviour
                 exerciseTimer = 0f;
                 _animator.SetTrigger("Exercise");
                 Debug.Log("운동중!");
+                clean -= 1;
+                full -= 1;
+                fatigue += 2;
+                healthy += 3;
                 Debug.Log("건강도 올라감!");
             }
         }
@@ -203,13 +247,21 @@ public class Balloon : MonoBehaviour
     Vector3 prevPos;
     float timer = 0.1f;
 
-    const float playTimeDistance = 100f;
+    const float playTimeDistance = 40f;
     void Play()
     {
         if (Input.GetKeyDown(KeyCode.Alpha0) && !isPlay) // 버튼 누르기로 바꾸기
         {
-            prevPos = transform.position;
-            isPlay = true;
+            Debug.Log("놀아주기 수행 시작");
+            if (fatigue < 100)
+            {
+                prevPos = transform.position;
+                isPlay = true;
+            }
+            else
+            {
+                Debug.Log("체력이 부족 수행 불가");
+            }
         }
 
         if (isPlay)
@@ -231,8 +283,12 @@ public class Balloon : MonoBehaviour
                 isPlay = false;
                 Debug.Log("놀아주기 끝.");
                 Debug.Log("즐거움 크게 증가.");
+                fun += 15;
                 Debug.Log("청결도 작게 감소.");
+                clean -= 10;
                 Debug.Log("포만도 중간 감소.");
+                full -= 10;
+                fatigue += 10;
             }
         }
 
@@ -240,13 +296,24 @@ public class Balloon : MonoBehaviour
     }
 
     bool isIdle = true;
+    float idleTimer = 0f;
     void Idle()
     {
         if (isIdle)
         {
-            Debug.Log("일정 간격으로 모든 수치 감소");
-            Debug.Log("피로도 소폭 감소");
-            if (Input.GetKey(KeyCode.K)) // 애정도 일정 수준 이상일 때로 변경
+            idleTimer += Time.deltaTime;
+            if(idleTimer >= 20f)
+            {
+                idleTimer = 0f;
+                Debug.Log("일정 간격으로 모든 수치 감소");
+                Debug.Log("피로도 소폭 감소");
+                fun -= 2;
+                clean -= 2;
+                healthy -= 2;
+                full -= 2;
+                fatigue -= 1;
+            }
+            if (affection > 65f) // 애정도 일정 수준 이상일 때로 변경
                 LookState(1);
             else
             {
@@ -267,7 +334,7 @@ public class Balloon : MonoBehaviour
                 CalculateWatchVector(Camera.main.transform);
                 break;
             case 2: // 산책중
-                CalculateWatchVector(walkLookPos);
+                CalculateWatchVector(linePos);
                 break;
             case 3: // 운동중
                 CalculateWatchVector(punchingBag.transform);
