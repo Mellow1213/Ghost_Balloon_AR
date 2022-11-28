@@ -20,6 +20,10 @@ public class Balloon : MonoBehaviour
     public Transform rotateAnchor;
     Animator _animator;
 
+    public float getAffection()
+    {
+        return affection;
+    }
 
     // Start is called before the first frame update
     void Start()
