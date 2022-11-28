@@ -81,6 +81,14 @@ public class Balloon : MonoBehaviour
                     Debug.Log("산책 끝");
                 }
             }
+
+
+            Play();
+
+            if (!targets[0].getIsTracked() && !targets[1].getIsTracked() && !targets[2].getIsTracked() && !targets[3].getIsTracked())
+            {
+                Idle();
+            }
         }
 
 
@@ -94,12 +102,6 @@ public class Balloon : MonoBehaviour
         //Play();
         //Eat();
         //Walk();
-        if (Input.GetKey(KeyCode.K))
-            CalculateWatchVector(Camera.main.transform);
-        else
-        {
-            rotateAnchor.DOLocalRotate(Vector3.zero, 2f);
-        }
     }
 
 
@@ -197,7 +199,7 @@ public class Balloon : MonoBehaviour
     const float playTimeDistance = 100f;
     void Play()
     {
-        if (Input.GetKeyDown(KeyCode.Alpha0) && !isPlay)
+        if (Input.GetKeyDown(KeyCode.Alpha0) && !isPlay) // 버튼 누르기로 바꾸기
         {
             prevPos = transform.position;
             isPlay = true;
@@ -237,6 +239,12 @@ public class Balloon : MonoBehaviour
         {
             Debug.Log("일정 간격으로 모든 수치 감소");
             Debug.Log("피로도 소폭 감소");
+            if (Input.GetKey(KeyCode.K)) // 애정도 일정 수준 이상일 때로 변경
+                CalculateWatchVector(Camera.main.transform);
+            else
+            {
+                rotateAnchor.DOLocalRotate(Vector3.zero, 2f);
+            }
         }
     }
 
