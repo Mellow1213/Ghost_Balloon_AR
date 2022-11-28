@@ -162,6 +162,7 @@ public class Balloon : MonoBehaviour
     bool isWalkStarted = false;
     void Walk()
     {
+        LookState(2);
         isWalkStarted = true;
         _lineRenderer.SetPosition(0, linePos.position);
         _lineRenderer.SetPosition(1, BalloonLead.position);
@@ -176,9 +177,9 @@ public class Balloon : MonoBehaviour
     float exerciseDistance;
     void Exercise()
     {
-        CalculateWatchVector(punchingBag.transform);
+        LookState(3);
         exerciseDistance = Vector3.Distance(punchingBag.transform.position, rotateAnchor.position);
-        if (exerciseDistance < 1.8f && exerciseDistance > 0.9f)
+        if (exerciseDistance < 1.8f && exerciseDistance > 0.3f)
         {
             exerciseTimer += Time.deltaTime;
             if (exerciseTimer > 1f)
@@ -244,10 +245,10 @@ public class Balloon : MonoBehaviour
             Debug.Log("일정 간격으로 모든 수치 감소");
             Debug.Log("피로도 소폭 감소");
             if (Input.GetKey(KeyCode.K)) // 애정도 일정 수준 이상일 때로 변경
-                CalculateWatchVector(Camera.main.transform);
+                LookState(1);
             else
             {
-                rotateAnchor.DOLocalRotate(Vector3.zero, 2f);
+                LookState(0);
             }
         }
     }
@@ -259,6 +260,15 @@ public class Balloon : MonoBehaviour
         {
             case 0: // 대기상태
                 rotateAnchor.DOLocalRotate(Vector3.zero, 2f);
+                break;
+            case 1: // 카메라를 보고 있음
+                CalculateWatchVector(Camera.main.transform);
+                break;
+            case 2: // 산책중
+                CalculateWatchVector(linePos);
+                break;
+            case 3: // 운동중
+                CalculateWatchVector(punchingBag.transform);
                 break;
         }
     }
