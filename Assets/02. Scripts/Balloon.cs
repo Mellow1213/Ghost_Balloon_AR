@@ -61,6 +61,12 @@ public class Balloon : MonoBehaviour
                 }
             }
 
+            if (targets[2].getIsTracked())
+            {
+                Exercise();
+            }
+
+
             if (targets[3].getIsTracked())
             {
                 Walk();
@@ -75,8 +81,6 @@ public class Balloon : MonoBehaviour
                     Debug.Log("산책 끝");
                 }
             }
-
-
         }
 
 
@@ -163,16 +167,21 @@ public class Balloon : MonoBehaviour
 
     public GameObject punchingBag;
     float exerciseTimer = 0f;
+    float exerciseDistance;
     void Exercise()
     {
         CalculateWatchVector(punchingBag.transform);
-        Debug.Log(Vector3.Distance(punchingBag.transform.position, rotateAnchor.position));
-        if (Vector3.Distance(punchingBag.transform.position, rotateAnchor.position) < 2f)
+        exerciseDistance = Vector3.Distance(punchingBag.transform.position, rotateAnchor.position);
+        if (exerciseDistance < 1.8f && exerciseDistance > 0.9f)
         {
-            Debug.Log("확인");
             exerciseTimer += Time.deltaTime;
             if (exerciseTimer > 1f)
+            {
+                exerciseTimer = 0f;
                 _animator.SetTrigger("Exercise");
+                Debug.Log("운동중!");
+                Debug.Log("건강도 올라감!");
+            }
         }
         else
         {
