@@ -42,7 +42,23 @@ public class Balloon : MonoBehaviour
             //Debug.Log("ShowerTarget = " + targets[1].getIsTracked());
             if (targets[1].getIsTracked())
             {
-                Shower();
+                rainParticle.SetActive(true);
+            }
+            else
+            {
+                rainParticle.SetActive(false);
+            }
+
+            if (doWashing)
+            {
+                showerTimer += Time.deltaTime;
+                Debug.Log("샤워하고 난 대기 시간 = " + showerTimer);
+                if (showerTimer >= 5f)
+                {
+                    Debug.Log("몸털기");
+                    Debug.Log("청결도 올라감");
+                    doWashing = false;
+                }
             }
 
         }
@@ -101,20 +117,13 @@ public class Balloon : MonoBehaviour
         Debug.Log("청결도 작게 감소");
     }
 
+    bool doWashing = false;
     float showerTimer = 0f;
-    void Shower()
-    {
-        Debug.Log("샤워하고 난 대기 시간 = " + showerTimer);
-        showerTimer += Time.deltaTime;
-        if(showerTimer >= 5f)
-        {
-            Debug.Log("몸털기");
-        }
-
-    }
+    public GameObject rainParticle;
     //샤워 시스템
     private void OnParticleCollision(GameObject other)
     {
+        doWashing = true;
         showerTimer = 0f;
         Debug.Log("청결도+");
     }
@@ -128,7 +137,7 @@ public class Balloon : MonoBehaviour
     {
         _lineRenderer.SetPosition(0, linePos.position);
         _lineRenderer.SetPosition(1, BalloonLead.position);
-        if(Vector3.Distance(rotateAnchor.transform.position, linePos.position) > 1f)
+        if (Vector3.Distance(rotateAnchor.transform.position, linePos.position) > 1f)
         {
             rotateAnchor.position = Vector3.MoveTowards(rotateAnchor.transform.position, linePos.position, 5 * Time.deltaTime);
         }
