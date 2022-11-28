@@ -159,6 +159,7 @@ public class Balloon : MonoBehaviour
 
     public LineRenderer _lineRenderer;
     public Transform linePos;
+    public Transform walkLookPos;
     public Transform BalloonLead;
     bool isWalkStarted = false;
     void Walk()
@@ -266,7 +267,7 @@ public class Balloon : MonoBehaviour
                 CalculateWatchVector(Camera.main.transform);
                 break;
             case 2: // 산책중
-                CalculateWatchVector(linePos);
+                CalculateWatchVector(walkLookPos);
                 break;
             case 3: // 운동중
                 CalculateWatchVector(punchingBag.transform);
