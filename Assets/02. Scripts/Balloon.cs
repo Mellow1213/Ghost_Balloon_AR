@@ -77,8 +77,12 @@ public class Balloon : MonoBehaviour
                 if (isWalkStarted)
                 {
                     rotateAnchor.DOMove(homeTransform.position, 2f);
-                    isWalkStarted = false;
-                    Debug.Log("산책 끝");
+                    if (Vector3.Distance(homeTransform.position, rotateAnchor.position) < 0.5f)
+                    {
+                        Debug.Log("산책 끝");
+
+                        isWalkStarted = false;
+                    }
                 }
             }
 
