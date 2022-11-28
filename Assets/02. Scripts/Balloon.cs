@@ -61,6 +61,22 @@ public class Balloon : MonoBehaviour
                 }
             }
 
+            if (targets[3].getIsTracked())
+            {
+                Walk();
+                Debug.Log("산책 시작");
+            }
+            else
+            {
+                if (isWalkStarted)
+                {
+                    rotateAnchor.DOMove(homeTransform.position, 2f);
+                    isWalkStarted = false;
+                    Debug.Log("산책 끝");
+                }
+            }
+
+
         }
 
 
@@ -133,13 +149,15 @@ public class Balloon : MonoBehaviour
     public LineRenderer _lineRenderer;
     public Transform linePos;
     public Transform BalloonLead;
+    bool isWalkStarted = false;
     void Walk()
     {
+        isWalkStarted = true;
         _lineRenderer.SetPosition(0, linePos.position);
         _lineRenderer.SetPosition(1, BalloonLead.position);
-        if (Vector3.Distance(rotateAnchor.transform.position, linePos.position) > 1f)
+        if (Vector3.Distance(rotateAnchor.transform.position, linePos.position) > 0.5f)
         {
-            rotateAnchor.position = Vector3.MoveTowards(rotateAnchor.transform.position, linePos.position, 5 * Time.deltaTime);
+            rotateAnchor.position = Vector3.Lerp(rotateAnchor.transform.position, linePos.position, Time.deltaTime);
         }
     }
 
