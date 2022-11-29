@@ -14,7 +14,9 @@ public class Balloon : MonoBehaviour
     [SerializeField] float affection = 20;
     [SerializeField] float fatigue = 0;
 
+    public Image _image;
     public Slider[] silderBar;
+    public Image[] sliderImage;
 
     public TrackingTarget[] targets;
     public TrackingTarget BalloonTarget;
@@ -52,6 +54,35 @@ public class Balloon : MonoBehaviour
         silderBar[3].value = full / 100;
         silderBar[4].value = affection / 100;
         silderBar[5].value = fatigue / 100;
+
+        for(int i = 0; i< 5; i++)
+        {
+            if (silderBar[i].value > 0.65f)
+            {
+                sliderImage[i].DOColor(Color.green, 3f);
+            }
+            else if (silderBar[i].value > 0.30f)
+            {
+                sliderImage[i].DOColor(Color.yellow, 3f);
+            }
+            else 
+            {
+                sliderImage[i].DOColor(Color.red, 3f);
+            }
+        }
+        if (silderBar[5].value > 0.65f)
+        {
+            sliderImage[5].DOColor(Color.red, 3f);
+
+        }else if(silderBar[5].value > 0.30f)
+        {
+            sliderImage[5].DOColor(Color.yellow, 3f);
+        }
+        else
+        {
+            sliderImage[5].DOColor(Color.green, 3f);
+        }
+
         if (BalloonTarget.getIsTracked())
         {
             //Debug.Log("FoodTarget = " + targets[0].getIsTracked());
@@ -260,12 +291,19 @@ public class Balloon : MonoBehaviour
     float walkDistance = 0;
     Vector3 prevPos;
     float timer = 0.1f;
+    bool startPlay = false;
+
+    public void DoPlay()
+    {
+        startPlay = true;
+    }
 
     const float playTimeDistance = 40f;
     void Play()
     {
-        if (Input.GetKeyDown(KeyCode.Alpha0) && !isPlay) // 버튼 누르기로 바꾸기
+        if (startPlay && !isPlay) // 버튼 누르기로 바꾸기
         {
+            startPlay = false;
             Debug.Log("놀아주기 수행 시작");
             if (fatigue < 100)
             {
@@ -290,9 +328,11 @@ public class Balloon : MonoBehaviour
             }
             Debug.Log("walkDistance : " + walkDistance);
             Debug.Log("산책 중");
+            _image.fillAmount = walkDistance / playTimeDistance;
 
             if (walkDistance >= playTimeDistance)
             {
+                _image.fillAmount = 1;
                 walkDistance = 0;
                 isPlay = false;
                 Debug.Log("놀아주기 끝.");
